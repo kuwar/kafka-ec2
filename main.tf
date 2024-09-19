@@ -75,21 +75,33 @@ resource "aws_instance" "kafka_cluster_instances" {
   tags = {
     # The count.index allows you to launch a resource 
     # starting with the distinct index number 0 and corresponding to this instance.
-    Name      = "test-kafka-cluster-${count.index}"
+    Name      = "kafka-cluster-${count.index}"
     Stack     = "Datascience"
     Developer = "Shaurave"
     Purpose   = "Testing kafka cluster in AWS EC2"
   }
 
   provisioner "file" {
-    source      = "zookeeper.txt"
-    destination = "/home/ec2-user/zookeeper.txt"
+    source      = "zookeeper.service"
+    destination = "/home/ec2-user/zookeeper.service"
 
     connection {
       type        = "ssh"
-      user        = "ec2-user"  
-      private_key = tls_private_key.kafka_cluster_private_key.private_key_pem   
-      host        = self.public_ip   
+      user        = "ec2-user"
+      private_key = tls_private_key.kafka_cluster_private_key.private_key_pem
+      host        = self.public_ip
+    }
+  }
+
+  provisioner "file" {
+    source      = "kafka.service"
+    destination = "/home/ec2-user/kafka.service"
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"                                                # Amazon Linux 2 uses 'ec2-user'
+      private_key = tls_private_key.kafka_cluster_private_key.private_key_pem # Path to your private key
+      host        = self.public_ip                                            # EC2 instance's public IP
     }
   }
 
