@@ -20,7 +20,12 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
-variable "ec2_instance_ip" {
+variable "apply_eip_resource" {
+  type    = bool
+  default = false
+}
+
+variable "eip_ids" {
   type = list(string)
 }
 variable "kraft_config_files" {
