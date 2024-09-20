@@ -9,3 +9,7 @@ sudo systemctl start kafka
 sudo systemctl daemon-reload
 sudo systemctl enable zookeeper
 sudo systemctl start zookeeper
+
+
+-- References
+https://www.clairvoyant.ai/blog/kafka-series-3.-creating-3-node-kafka-cluster-on-virtual-box

@@ -19,3 +19,10 @@ variable "instance_type" {
   type    = string
   default = "t2.micro"
 }
+
+variable "ec2_instance_ip" {
+  type = list(string)
+}
+variable "kraft_config_files" {
+  type = list(string)
+}

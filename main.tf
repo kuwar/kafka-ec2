@@ -39,14 +39,14 @@ resource "aws_security_group" "kafka_cluster_sg" {
     from_port   = 9092
     to_port     = 9092
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Kafka broker port (update with your IP)
+    cidr_blocks = ["0.0.0.0/0"] # Allow Kafka client traffic
   }
 
   ingress {
-    from_port   = 2181
-    to_port     = 2181
+    from_port   = 9093
+    to_port     = 9093
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Zookeeper port (update with your IP)
+    cidr_blocks = ["0.0.0.0/0"] # Allow Kafka inter-broker communication
   }
 
   # Egress Rule: Allow all outbound traffic
@@ -81,15 +81,16 @@ resource "aws_instance" "kafka_cluster_instances" {
     Purpose   = "Testing kafka cluster in AWS EC2"
   }
 
+
   provisioner "file" {
-    source      = "zookeeper.service"
-    destination = "/home/ec2-user/zookeeper.service"
+    source      = var.kraft_config_files[count.index]
+    destination = "/home/ec2-user/server.properties"
 
     connection {
       type        = "ssh"
-      user        = "ec2-user"
-      private_key = tls_private_key.kafka_cluster_private_key.private_key_pem
-      host        = self.public_ip
+      user        = "ec2-user"                                                # Amazon Linux 2 uses 'ec2-user'
+      private_key = tls_private_key.kafka_cluster_private_key.private_key_pem # Path to your private key
+      host        = self.public_ip                                            # EC2 instance's public IP
     }
   }
 
