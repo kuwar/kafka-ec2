@@ -18,11 +18,11 @@ https://www.digitalocean.com/community/tutorials/how-to-set-up-a-multi-node-kafk
 
 
 ...
-controller.quorum.voters=1@IP:9093,2@IP:9093,3@IP:9093
+controller.quorum.voters=1@15.188.211.194:9093,2@13.38.157.254:9093,3@13.37.33.32:9093
 ...
 
-listeners=PLAINTEXT://IP:9092,CONTROLLER://IP:9093
-advertised.listeners=PLAINTEXT://IP:9092
+listeners=PLAINTEXT://13.37.33.32:9092,CONTROLLER://13.37.33.32:9093
+advertised.listeners=PLAINTEXT://13.37.33.32:9092
 
 num.partitions=6
 
@@ -32,7 +32,11 @@ transaction.state.log.replication.factor=2
 
 
 ------
+kafka-cluster-eip-1 -> 15.188.211.194
+
+kafka-cluster-eip-2 -> 13.38.157.254
+
+kafka-cluster-eip-3 -> 13.37.33.32
 
 
-
-
+sudo chmod -R 777 /usr/local/kafka

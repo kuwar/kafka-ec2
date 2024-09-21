@@ -8,10 +8,10 @@ sudo yum install java-21-amazon-corretto-devel -y
 java -version
 
 # Download and install Kafka
-wget https://downloads.apache.org/kafka/3.7.1/kafka_2.13-3.7.1.tgz || { echo "kafka download failed"; exit 1; }
-tar -xzf kafka_2.13-3.7.1.tgz
-sudo mv kafka_2.13-3.7.1 /usr/local/kafka || { echo "kafka move failed"; exit 1; }
-sudo rm -rf kafka_2.13-3.7.1.tgz
+wget https://downloads.apache.org/kafka/3.8.0/kafka_2.13-3.8.0.tgz || { echo "kafka download failed"; exit 1; }
+tar -xzf kafka_2.13-3.8.0.tgz
+sudo mv kafka_2.13-3.8.0.tgz /usr/local/kafka || { echo "kafka move failed"; exit 1; }
+sudo rm -rf kafka_2.13-3.8.0.tgz
 
 # make data directory for kafka
 sudo mkdir -p /usr/local/kafka/data

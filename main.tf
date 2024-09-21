@@ -73,7 +73,7 @@ resource "aws_instance" "kafka_cluster_instances" {
   tags = {
     # The count.index allows you to launch a resource 
     # starting with the distinct index number 0 and corresponding to this instance.
-    Name      = "kafka-cluster-${count.index}"
+    Name      = "kafka-cluster-${count.index + 1}"
     Stack     = "Datascience"
     Developer = "Shaurave"
     Purpose   = "Testing kafka cluster in AWS EC2"
