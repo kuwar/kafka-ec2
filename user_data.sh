@@ -29,9 +29,6 @@ sudo mv /home/ec2-user/server.properties /usr/local/kafka/config/kraft/server.pr
 # setting up kafka and kraft autostart services
 sudo mv /home/ec2-user/kafka.service /etc/systemd/system/kafka.service || { echo "kafka service move failed"; exit 1; }
 
-KAFKA_CLUSTER_ID="WbwIBObxTu6uaOlkwPwZeg0"
-/usr/local/kafka/bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c /usr/local/kafka/config/kraft/server.properties
-
 # making kafka daemon
 sudo systemctl daemon-reload
 
