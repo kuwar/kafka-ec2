@@ -13,6 +13,9 @@ tar -xzf kafka_2.13-3.8.0.tgz
 sudo mv kafka_2.13-3.8.0.tgz /usr/local/kafka || { echo "kafka move failed"; exit 1; }
 sudo rm -rf kafka_2.13-3.8.0.tgz
 
+# making the kafka dir read, write and executable for all the users
+sudo chown -R 777 /usr/local/kafka
+
 # make data directory for kafka
 sudo mkdir -p /usr/local/kafka/data
 sudo mkdir /usr/local/kafka/data/broker
@@ -21,7 +24,7 @@ sudo mkdir /usr/local/kafka/data/broker/logs
 sudo rm -rf /usr/local/kafka/data/broker/logs/*
 
 # Replacing the kraft server.properties
-sudo mv /home/ec2-user/server.properties /usr/local/kafka/config/kraft/server.properties
+sudo mv /home/ec2-user/server.properties /usr/local/kafka/config/kraft/server.properties || { echo "server.properties move failed"; exit 1; }
 
 # setting up kafka and kraft autostart services
 sudo mv /home/ec2-user/kafka.service /etc/systemd/system/kafka.service || { echo "kafka service move failed"; exit 1; }
