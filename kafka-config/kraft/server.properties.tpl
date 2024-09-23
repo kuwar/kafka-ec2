@@ -24,10 +24,10 @@
 process.roles=broker,controller
 
 # The node id associated with this instance's roles
-node.id=1
+node.id=${node_id}
 
 # The connect string for the controller quorum
-controller.quorum.voters=1@<PrivIP1>:9093,2@<PrivIP2>:9093,3@<PrivIP3>:9093
+controller.quorum.voters=${controller_quorum_voters}
 
 ############################# Socket Server Settings #############################
 
@@ -39,14 +39,14 @@ controller.quorum.voters=1@<PrivIP1>:9093,2@<PrivIP2>:9093,3@<PrivIP3>:9093
 #     listeners = listener_name://host_name:port
 #   EXAMPLE:
 #     listeners = PLAINTEXT://your.host.name:9092
-listeners=PLAINTEXT://:9092,CONTROLLER://:9093
+listeners=PLAINTEXT://${instance_public_ip}:9092,CONTROLLER://${instance_public_ip}:9093
 
 # Name of listener used for communication between brokers.
 inter.broker.listener.name=PLAINTEXT
 
 # Listener name, hostname and port the broker will advertise to clients.
 # If not set, it uses the value for "listeners".
-advertised.listeners=PLAINTEXT://<PublicIP1>:9092
+advertised.listeners=PLAINTEXT://${instance_public_ip}:9092
 
 # A comma-separated list of the names of the listeners used by the controller.
 # If no explicit mapping set in `listener.security.protocol.map`, default will be using PLAINTEXT protocol
@@ -75,12 +75,12 @@ socket.request.max.bytes=104857600
 ############################# Log Basics #############################
 
 # A comma separated list of directories under which to store log files
-log.dirs=/usr/local/kafka/data/broker/logs
+log.dirs=${log_dirs}
 
 # The default number of log partitions per topic. More partitions allow greater
 # parallelism for consumption, but this will also result in more files across
 # the brokers.
-num.partitions=6
+num.partitions=${num_partitions}
 
 # The number of threads per data directory to be used for log recovery at startup and flushing at shutdown.
 # This value is recommended to be increased for installations with data dirs located in RAID array.
@@ -89,8 +89,8 @@ num.recovery.threads.per.data.dir=1
 ############################# Internal Topic Settings  #############################
 # The replication factor for the group metadata internal topics "__consumer_offsets" and "__transaction_state"
 # For anything other than development testing, a value greater than 1 is recommended to ensure availability such as 3.
-offsets.topic.replication.factor=2
-transaction.state.log.replication.factor=2
+offsets.topic.replication.factor=${offsets_topic_replication_factor}
+transaction.state.log.replication.factor=${transaction_state_log_replication_factor}
 transaction.state.log.min.isr=1
 
 ############################# Log Flush Policy #############################

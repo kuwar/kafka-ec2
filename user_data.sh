@@ -25,6 +25,8 @@ sudo mkdir $KAFKA_INSTALL_DIR/data/broker/logs
 
 sudo rm -rf $KAFKA_INSTALL_DIR/data/broker/logs/*
 
+# moving kraft's server.properties file in the respective directory
+sudo mv /home/ec2-user/server.properties $KAFKA_INSTALL_DIR/config/kraft/server.properties || { echo "server.propertiesls move failed"; exit 1; }
 # setting up kafka and kraft autostart services
 sudo mv /home/ec2-user/kafka.service /etc/systemd/system/kafka.service || { echo "kafka service move failed"; exit 1; }
 

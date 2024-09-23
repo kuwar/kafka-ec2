@@ -130,12 +130,6 @@ resource "null_resource" "kafka_cluster_server_properties_set" {
 
   provisioner "file" {
     content     = data.template_file.kafka_cluster_server_properties_config[count.index].rendered
-    destination = "/usr/local/kafka/config/kraft/server.properties"
+    destination = "/home/ec2-user/server.properties"
   }
-
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "sudo systemctl restart kafka"
-  #   ]
-  # }
 }
