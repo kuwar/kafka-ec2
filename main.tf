@@ -62,7 +62,7 @@ resource "aws_security_group" "kafka_cluster_sg" {
 
 resource "aws_instance" "kafka_cluster_instances" {
   # Creates 3 identical aws ec2 instances
-  count = 3
+  count = var.total_node
 
   key_name        = aws_key_pair.kafka_cluster_key_pair.key_name # Attach the existing key pair
   security_groups = [aws_security_group.kafka_cluster_sg.name]   # Attach the security group
@@ -97,7 +97,7 @@ resource "aws_instance" "kafka_cluster_instances" {
 }
 
 resource "aws_eip_association" "kafka_cluster_eip_assoc" {
-  count         = 3
+  count         = length(aws_instance.kafka_cluster_instances)
   instance_id   = aws_instance.kafka_cluster_instances[count.index].id
   allocation_id = aws_eip.kafka_cluster_eip[count.index].id
 }
@@ -112,10 +112,10 @@ data "template_file" "kafka_cluster_server_properties_config" {
     controller_quorum_voters                 = join(",", [for idx in range(length(aws_instance.kafka_cluster_instances)) : "${idx + 1}@${aws_instance.kafka_cluster_instances[idx].private_ip}:9093"])
     instance_private_ip                      = aws_instance.kafka_cluster_instances[count.index].private_ip
     instance_public_ip                       = aws_instance.kafka_cluster_instances[count.index].public_ip
-    log_dirs                                 = "/usr/local/kafka/data/broker/logs"
+    log_dirs                                 = var.kafka_log_path
     num_partitions                           = length(aws_instance.kafka_cluster_instances) * 2
-    offsets_topic_replication_factor         = 2
-    transaction_state_log_replication_factor = 2
+    offsets_topic_replication_factor         = var.offsets_topic_replication_factor
+    transaction_state_log_replication_factor = var.transaction_state_log_replication_factor
   }
 }
 
