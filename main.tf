@@ -78,20 +78,6 @@ resource "aws_instance" "kafka_cluster_instances" {
     Developer = "Shaurave"
     Purpose   = "Testing kafka cluster in AWS EC2"
   }
-
-
-  provisioner "file" {
-    source      = var.kraft_config_files[count.index]
-    destination = "/home/ec2-user/server.properties"
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"                                                # Amazon Linux 2 uses 'ec2-user'
-      private_key = tls_private_key.kafka_cluster_private_key.private_key_pem # Path to your private key
-      host        = self.public_ip                                            # EC2 instance's public IP
-    }
-  }
-
   provisioner "file" {
     source      = "kafka.service"
     destination = "/home/ec2-user/kafka.service"
@@ -114,4 +100,42 @@ resource "aws_eip_association" "kafka_cluster_eip_assoc" {
   count         = 3
   instance_id   = aws_instance.kafka_cluster_instances[count.index].id
   allocation_id = aws_eip.kafka_cluster_eip[count.index].id
+}
+
+
+data "template_file" "kafka_cluster_server_properties_config" {
+  count    = length(aws_instance.kafka_cluster_instances)
+  template = file("${path.module}/kafka-config/kraft/server.properties.tpl")
+
+  vars = {
+    node_id                                  = count.index + 1
+    controller_quorum_voters                 = join(",", [for idx in range(length(aws_instance.kafka_cluster_instances)) : "${idx + 1}@${aws_instance.kafka_cluster_instances[idx].private_ip}:9093"])
+    instance_private_ip                      = aws_instance.kafka_cluster_instances[count.index].private_ip
+    instance_public_ip                       = aws_instance.kafka_cluster_instances[count.index].public_ip
+    log_dirs                                 = "/usr/local/kafka/data/broker/logs"
+    num_partitions                           = length(aws_instance.kafka_cluster_instances) * 2
+    offsets_topic_replication_factor         = 2
+    transaction_state_log_replication_factor = 2
+  }
+}
+
+resource "null_resource" "kafka_cluster_server_properties_set" {
+  count = length(aws_instance.kafka_cluster_instances)
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"                                                  # Amazon Linux 2 uses 'ec2-user'
+    private_key = tls_private_key.kafka_cluster_private_key.private_key_pem   # Path to your private key
+    host        = aws_instance.kafka_cluster_instances[count.index].public_ip # EC2 instance's public IP
+  }
+
+  provisioner "file" {
+    content     = data.template_file.kafka_cluster_server_properties_config[count.index].rendered
+    destination = "/usr/local/kafka/config/kraft/server.properties"
+  }
+
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo systemctl restart kafka"
+  #   ]
+  # }
 }

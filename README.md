@@ -32,26 +32,15 @@ transaction.state.log.replication.factor=2
 
 
 ------
-kafka-cluster-eip-1 -> 13.36.46.163, private ip -> 172.31.7.56
+kafka-cluster-eip-1 -> 15.188.255.81, private ip -> 172.31.7.161
 
-kafka-cluster-eip-2 -> 13.37.43.97, private ip -> 172.31.3.227
+kafka-cluster-eip-2 -> 35.180.161.69, private ip -> 172.31.13.55
 
-kafka-cluster-eip-3 -> 15.237.78.75, private ip -> 172.31.4.194
+kafka-cluster-eip-3 -> 15.236.105.35, private ip -> 172.31.11.182
 
-1@172.31.7.56:9093,2@172.31.3.227:9093,3@172.31.4.194:9093
+1@172.31.7.161:9093,2@172.31.13.55:9093,3@172.31.11.182:9093
 
 sudo chmod -R 777 /usr/local/kafka
-
-ec2_instance_private_ip = [
-  "172.31.8.113",
-  "172.31.0.78",
-  "172.31.2.86",
-]
-ec2_instance_public_ip = [
-  "52.47.104.31",
-  "15.237.254.247",
-  "15.237.202.144",
-]
 
 
 -----$_COOKIEprocess.roles=broker,controller

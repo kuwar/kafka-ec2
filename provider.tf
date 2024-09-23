@@ -14,6 +14,16 @@ terraform {
       source  = "hashicorp/tls"
       version = "4.0.6"
     }
+
+    template = {
+      source  = "hashicorp/template"
+      version = "2.2.0"
+    }
+
+    null = {
+      source  = "hashicorp/null"
+      version = "3.2.3"
+    }
   }
 
   required_version = ">= 1.0.0" # Ensures you are using a modern Terraform version
@@ -28,5 +38,13 @@ provider "local" {
 }
 
 provider "tls" {
+  # Configuration options
+}
+
+provider "template" {
+  # Configuration options
+}
+
+provider "null" {
   # Configuration options
 }

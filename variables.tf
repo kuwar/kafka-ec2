@@ -24,10 +24,3 @@ variable "apply_eip_resource" {
   type    = bool
   default = false
 }
-
-variable "eip_ids" {
-  type = list(string)
-}
-variable "kraft_config_files" {
-  type = list(string)
-}
