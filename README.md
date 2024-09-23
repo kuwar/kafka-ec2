@@ -69,3 +69,11 @@ bin/kafka-topics.sh --bootstrap-server <Node1-Public-IP>:9092 --describe
 bin/kafka-topics.sh --create --topic test-topic --partitions 3 --replication-factor 3 --bootstrap-server localhost:9092
 
 bin/kafka-topics.sh --bootstrap-server 15.188.211.194:9092 --describe
+
+
+kafka_cluster_id = $(bin/kafka-storage.sh random-uuid)
+
+
+/usr/local/kafka/bin/kafka-storage.sh format -t ussfzE8yTr-lVwg5nC3fCA -c /usr/local/kafka/config/kraft/server.properties
+
+13.38.70.43:9093
