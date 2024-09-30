@@ -76,4 +76,11 @@ kafka_cluster_id = $(bin/kafka-storage.sh random-uuid)
 
 /usr/local/kafka/bin/kafka-storage.sh format -t ussfzE8yTr-lVwg5nC3fCA -c /usr/local/kafka/config/kraft/server.properties
 
-13.38.70.43:9093
+./bin/kafka-metadata-quorum.sh --bootstrap-controller 172.31.7.165:9093 describe --status
+
+./bin/kafka-topics.sh --create --topic first-topic --bootstrap-server 15.237.176.130:9092 --replication-factor 2
+./bin/kafka-topics.sh --create --topic first-topic --bootstrap-server 172.31.7.165:9092 --partitions 3 --replication-factor 3
+
+
+./bin/kafka-topics.sh --describe --bootstrap-server 15.237.176.130:9092 --topic first-topic
+./bin/kafka-topics.sh --list --bootstrap-server <private-ip-of-kafka-node-1>:9092

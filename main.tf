@@ -22,29 +22,21 @@ resource "aws_cloudwatch_log_group" "kafka_cluster_log_group" {
 }
 
 # Create a security group for SSH access
+locals {
+  allowed_ports = [22, 80, 3000, 8080, 443, 7071, 9090, 9092, 9093, 9097]
+}
 resource "aws_security_group" "kafka_cluster_sg" {
   name        = "kafka-cluster-sg"
   description = "Allow inbound/outbound traffic for Kafka"
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Open SSH from anywhere; restrict if necessary
-  }
-
-  ingress {
-    from_port   = 9092
-    to_port     = 9092
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow Kafka client traffic
-  }
-
-  ingress {
-    from_port   = 9093
-    to_port     = 9093
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow Kafka inter-broker communication
+  dynamic "ingress" {
+    for_each = local.allowed_ports
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
   }
 
   # Egress Rule: Allow all outbound traffic
@@ -63,6 +55,8 @@ resource "aws_security_group" "kafka_cluster_sg" {
 resource "aws_instance" "kafka_cluster_instances" {
   # Creates 3 identical aws ec2 instances
   count = var.total_node
+
+  associate_public_ip_address = true
 
   key_name        = aws_key_pair.kafka_cluster_key_pair.key_name # Attach the existing key pair
   security_groups = [aws_security_group.kafka_cluster_sg.name]   # Attach the security group
@@ -112,6 +106,7 @@ data "template_file" "kafka_cluster_server_properties_config" {
     controller_quorum_voters                 = join(",", [for idx in range(length(aws_instance.kafka_cluster_instances)) : "${idx + 1}@${aws_instance.kafka_cluster_instances[idx].private_ip}:9093"])
     instance_private_ip                      = aws_instance.kafka_cluster_instances[count.index].private_ip
     instance_public_ip                       = aws_instance.kafka_cluster_instances[count.index].public_ip
+    instance_public_dns                      = aws_instance.kafka_cluster_instances[count.index].public_dns
     log_dirs                                 = var.kafka_log_path
     num_partitions                           = length(aws_instance.kafka_cluster_instances) * 2
     offsets_topic_replication_factor         = var.offsets_topic_replication_factor

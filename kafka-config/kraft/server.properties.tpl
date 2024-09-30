@@ -39,7 +39,7 @@ controller.quorum.voters=${controller_quorum_voters}
 #     listeners = listener_name://host_name:port
 #   EXAMPLE:
 #     listeners = PLAINTEXT://your.host.name:9092
-listeners=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+listeners=PLAINTEXT://:9092,CONTROLLER://:9093
 
 # Name of listener used for communication between brokers.
 inter.broker.listener.name=PLAINTEXT
