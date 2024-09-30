@@ -21,36 +21,7 @@ resource "aws_cloudwatch_log_group" "kafka_cluster_log_group" {
   name = "kafka-cluster-logs"
 }
 
-# Create a security group for SSH access
-locals {
-  allowed_ports = [22, 80, 3000, 8080, 443, 7071, 9090, 9092, 9093, 9097]
-}
-resource "aws_security_group" "kafka_cluster_sg" {
-  name        = "kafka-cluster-sg"
-  description = "Allow inbound/outbound traffic for Kafka"
 
-  dynamic "ingress" {
-    for_each = local.allowed_ports
-    content {
-      from_port   = ingress.value
-      to_port     = ingress.value
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  }
-
-  # Egress Rule: Allow all outbound traffic
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "Kafka-cluster-SG"
-  }
-}
 
 resource "aws_instance" "kafka_cluster_instances" {
   # Creates 3 identical aws ec2 instances
@@ -58,8 +29,9 @@ resource "aws_instance" "kafka_cluster_instances" {
 
   associate_public_ip_address = true
 
-  key_name        = aws_key_pair.kafka_cluster_key_pair.key_name # Attach the existing key pair
-  security_groups = [aws_security_group.kafka_cluster_sg.name]   # Attach the security group
+  key_name               = aws_key_pair.kafka_cluster_key_pair.key_name    # Attach the existing key pair
+  subnet_id              = aws_subnet.kafka_cluster_subnet[count.index].id # Assign different subnet based on count index
+  vpc_security_group_ids = [aws_security_group.kafka_cluster_sg.id]        # Attach the security group
 
   # All 3 instances will have the same ami and instance_type
   ami           = lookup(var.ec2_ami, var.region, "ami-0cdfcb9783eb43c45")
