@@ -5,6 +5,12 @@ echo "Hello from $(hostname -f)!"
 
 KAFKA_INSTALL_DIR="/usr/local/kafka"
 
+# Create the kafka user
+sudo useradd kafka
+
+# Allow kafka user to run commands without password
+echo "kafka ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/kafka
+
 sudo yum update
 sudo yum install java-21-amazon-corretto-devel -y
 java -version
@@ -31,7 +37,8 @@ sudo mv /home/ec2-user/server.properties $KAFKA_INSTALL_DIR/config/kraft/server.
 sudo mv /home/ec2-user/kafka.service /etc/systemd/system/kafka.service || { echo "kafka service move failed"; exit 1; }
 
 # making the kafka dir read, write and executable for all the users
-sudo chmod -R 777 $KAFKA_INSTALL_DIR
+# sudo chmod -R 777 $KAFKA_INSTALL_DIR
+sudo chown -R kafka:kafka $KAFKA_INSTALL_DIR
 
 # making kafka daemon
 sudo systemctl daemon-reload

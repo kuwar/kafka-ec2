@@ -84,3 +84,25 @@ kafka_cluster_id = $(bin/kafka-storage.sh random-uuid)
 
 ./bin/kafka-topics.sh --describe --bootstrap-server 15.237.176.130:9092 --topic first-topic
 ./bin/kafka-topics.sh --list --bootstrap-server <private-ip-of-kafka-node-1>:9092
+
+
+./bin/kafka-console-producer.sh --broker-list 13.38.44.59:9092,15.188.238.177:9092,13.38.96.58:9092 --topic test
+
+ec2_instance_private_ip = [
+  "10.0.0.145",
+  "10.0.1.186",
+  "10.0.2.31",
+]
+ec2_instance_public_dns = [
+  "ec2-13-38-70-217.eu-west-3.compute.amazonaws.com",
+  "ec2-13-38-65-205.eu-west-3.compute.amazonaws.com",
+  "ec2-35-180-98-173.eu-west-3.compute.amazonaws.com",
+]
+ec2_instance_public_ip = [
+  "13.38.70.217",
+  "13.38.65.205",
+  "35.180.98.173",
+]
+
+sudo useradd --no-create-home --shell /bin/false kafka
+
