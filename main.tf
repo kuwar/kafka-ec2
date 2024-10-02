@@ -29,9 +29,9 @@ resource "aws_instance" "kafka_cluster_instances" {
 
   associate_public_ip_address = true
 
-  key_name               = aws_key_pair.kafka_cluster_key_pair.key_name    # Attach the existing key pair
-  subnet_id              = aws_subnet.kafka_cluster_subnet[count.index].id # Assign different subnet based on count index
-  vpc_security_group_ids = [aws_security_group.kafka_cluster_sg.id]        # Attach the security group
+  key_name               = aws_key_pair.kafka_cluster_key_pair.key_name           # Attach the existing key pair
+  subnet_id              = aws_subnet.kafka_cluster_public_subnet[count.index].id # Assign different subnet based on count index
+  vpc_security_group_ids = [aws_security_group.kafka_cluster_sg.id]               # Attach the security group
 
   # All 3 instances will have the same ami and instance_type
   ami           = lookup(var.ec2_ami, var.region, "ami-0cdfcb9783eb43c45")
@@ -77,7 +77,7 @@ data "template_file" "kafka_cluster_server_properties_config" {
     node_id                                  = count.index + 1
     controller_quorum_voters                 = join(",", [for idx in range(length(aws_instance.kafka_cluster_instances)) : "${idx + 1}@${aws_instance.kafka_cluster_instances[idx].private_ip}:9093"])
     instance_private_ip                      = aws_instance.kafka_cluster_instances[count.index].private_ip
-    instance_public_ip                       = aws_instance.kafka_cluster_instances[count.index].public_ip
+    instance_public_ip                       = aws_eip.kafka_cluster_eip[count.index].public_ip
     instance_public_dns                      = aws_instance.kafka_cluster_instances[count.index].public_dns
     log_dirs                                 = var.kafka_log_path
     num_partitions                           = length(aws_instance.kafka_cluster_instances) * 2

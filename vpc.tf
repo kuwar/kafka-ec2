@@ -11,13 +11,13 @@ resource "aws_vpc" "kafka_cluster_vpc" {
 }
 
 # Subnets for each AZ
-resource "aws_subnet" "kafka_cluster_subnet" {
+resource "aws_subnet" "kafka_cluster_public_subnet" {
   count             = 3
   vpc_id            = aws_vpc.kafka_cluster_vpc.id
   cidr_block        = cidrsubnet(aws_vpc.kafka_cluster_vpc.cidr_block, 8, count.index)
   availability_zone = element(["eu-west-3a", "eu-west-3b", "eu-west-3c"], count.index)
   tags = {
-    Name = "kafka-cluster-subnet-${count.index + 1}"
+    Name = "kafka-cluster-public-subnet-${count.index + 1}"
   }
 }
 
@@ -47,6 +47,6 @@ resource "aws_route_table" "kafka_cluster_public_rt" {
 # Associate subnets with the route table
 resource "aws_route_table_association" "kafka_cluster_route_table_assoc" {
   count          = 3
-  subnet_id      = aws_subnet.kafka_cluster_subnet[count.index].id
+  subnet_id      = aws_subnet.kafka_cluster_public_subnet[count.index].id
   route_table_id = aws_route_table.kafka_cluster_public_rt.id
 }
