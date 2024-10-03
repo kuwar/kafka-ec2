@@ -52,20 +52,20 @@ data "template_file" "prometheus_yml_config" {
   template = file("${path.module}/monitoring/prometheus.yml.tpl")
 
   vars = {
-    brokers_list                 = [for idx in range(length(aws_eip.kafka_cluster_eip)) : "${aws_eip.kafka_cluster_eip[idx].public_ip}:7071"]
+    brokers_list = [for idx in range(length(aws_eip.kafka_cluster_eip)) : "${aws_eip.kafka_cluster_eip[idx].public_ip}:7071"]
   }
 }
 
 resource "null_resource" "prometheus_yml_set" {
-    triggers = {
+  triggers = {
     always_run = timestamp()
   }
-  
+
   connection {
     type        = "ssh"
-    user        = "ec2-user"                                                  # Amazon Linux 2 uses 'ec2-user'
-    private_key = tls_private_key.kafka_cluster_private_key.private_key_pem   # Path to your private key
-    host        = aws_instance.prometheus_grafana_instance.public_ip # EC2 instance's public IP
+    user        = "ec2-user"                                                # Amazon Linux 2 uses 'ec2-user'
+    private_key = tls_private_key.kafka_cluster_private_key.private_key_pem # Path to your private key
+    host        = aws_instance.prometheus_grafana_instance.public_ip        # EC2 instance's public IP
   }
 
   provisioner "file" {
