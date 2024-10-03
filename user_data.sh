@@ -36,6 +36,14 @@ sudo mv /home/ec2-user/server.properties $KAFKA_INSTALL_DIR/config/kraft/server.
 # setting up kafka and kraft autostart services
 sudo mv /home/ec2-user/kafka.service /etc/systemd/system/kafka.service || { echo "kafka service move failed"; exit 1; }
 
+# Setting up JMX Exporter
+JMX_JAR_FOLDER = "/usr/local/kafka/prometheus"
+JMX_DOWNLOAD_URL = "https://repo.maven.apache.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/1.0.1/jmx_prometheus_javaagent-1.0.1.jar"
+sudo mkdir $JMX_JAR_FOLDER
+sudo mv /home/ec2-user/kafka_jmx_config.yml $JMX_JAR_FOLDER || { echo "Kafka JMX config move failed"; exit 1; }
+wget $JMX_DOWNLOAD_URL
+sudo mv jmx_prometheus_javaagent-1.0.1.jar $JMX_JAR_FOLDER
+
 # making the kafka dir read, write and executable for all the users
 # sudo chmod -R 777 $KAFKA_INSTALL_DIR
 sudo chown -R kafka:kafka $KAFKA_INSTALL_DIR

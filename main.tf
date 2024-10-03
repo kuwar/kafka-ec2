@@ -99,4 +99,9 @@ resource "null_resource" "kafka_cluster_server_properties_set" {
     content     = data.template_file.kafka_cluster_server_properties_config[count.index].rendered
     destination = "/home/ec2-user/server.properties"
   }
+
+  provisioner "file" {
+    source      = "monitoring/kafka_jmx_exporter.yml"
+    destination = "/home/ec2-user/kafka_jmx_exporter.yml"
+  }
 }
