@@ -21,8 +21,6 @@ cd /tmp
 wget $PROMETHEUS_DOWNLOAD_LINK
 tar -xvf prometheus-2.54.1.linux-amd64.tar.gz
 sudo mv prometheus-2.54.1.linux-amd64 $PROMETHEUS_HOME
-sudo ln -s $PROMETHEUS_HOME/prometheus /usr/local/bin/prometheus
-sudo ln -s $PROMETHEUS_HOME/promtool /usr/local/bin/promtool
 
 sudo chown -R prometheus:prometheus $PROMETHEUS_HOME
 

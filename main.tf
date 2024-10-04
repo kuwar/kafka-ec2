@@ -88,5 +88,11 @@ resource "null_resource" "kafka_cluster_server_properties_set" {
       "sudo chmod +x /home/ec2-user/kafka_server_up.sh",
       "sudo /home/ec2-user/kafka_server_up.sh"
     ]
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"                                                # Amazon Linux 2 uses 'ec2-user'
+      private_key = tls_private_key.kafka_cluster_private_key.private_key_pem # Path to your private key
+      host        = aws_eip.kafka_cluster_eip[count.index].public_ip          # EC2 instance's public IP
+    }
   }
 }
