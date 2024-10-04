@@ -1,7 +1,7 @@
 #!/bin/bash
 
-exec > >(tee /var/log/prometheus_grafana_server_up.log|logger -t user-data -s 2>/dev/console) 2>&1
-echo "Hello from $(hostname -f)!"
+# exec > >(tee /var/log/prometheus_grafana_server_up.log|logger -t user-data -s 2>/dev/console) 2>&1
+# echo "Hello from $(hostname -f)!"
 
 PROMETHEUS_HOME="/etc/prometheus"
 

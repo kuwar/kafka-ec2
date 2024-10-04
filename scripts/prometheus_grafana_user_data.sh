@@ -24,6 +24,10 @@ sudo mv prometheus-2.54.1.linux-amd64 $PROMETHEUS_HOME
 
 sudo chown -R prometheus:prometheus $PROMETHEUS_HOME
 
+# prometheus data directory
+sudo mkdir /var/lib/prometheus
+sudo chown -R prometheus:prometheus /var/lib/prometheus
+
 # Install Grafana
 sudo tee /etc/yum.repos.d/grafana.repo<<EOF
 [grafana]
