@@ -10,5 +10,5 @@ output "ec2_instance_public_dns" {
 }
 
 output "prometheus_grafana_instance_public_ip" {
-  value = aws_instance.prometheus_grafana.public_ip
+  value = aws_instance.prometheus_grafana_instance.public_ip
 }

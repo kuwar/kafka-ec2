@@ -40,7 +40,7 @@ resource "aws_instance" "prometheus_grafana_instance" {
   associate_public_ip_address = true
 
   # User data script to install Prometheus and Grafana
-  user_data = file("monitoring/setup_prometheus_grafana.sh")
+  user_data = file("scripts/prometheus_grafana_user_data.sh")
 
   tags = {
     Name    = "Prometheus-Grafana-EC2"
@@ -52,11 +52,11 @@ data "template_file" "prometheus_yml_config" {
   template = file("${path.module}/monitoring/prometheus.yml.tpl")
 
   vars = {
-    brokers_list = [for idx in range(length(aws_eip.kafka_cluster_eip)) : "${aws_eip.kafka_cluster_eip[idx].public_ip}:7071"]
+    brokers_list = jsonencode([for idx in range(length(aws_eip.kafka_cluster_eip)) : "${aws_eip.kafka_cluster_eip[idx].public_ip}:7071"])
   }
 }
 
-resource "null_resource" "prometheus_yml_set" {
+resource "null_resource" "prometheus_server_properties_set" {
   triggers = {
     always_run = timestamp()
   }
@@ -76,6 +76,17 @@ resource "null_resource" "prometheus_yml_set" {
   provisioner "file" {
     source      = "monitoring/prometheus.service"
     destination = "/home/ec2-user/prometheus.service"
+  }
+
+  provisioner "file" {
+    source      = "scripts/prometheus_grafana_server_up.sh"
+    destination = "/home/ec2-user/prometheus_grafana_server_up.sh"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /home/ec2-user/prometheus_grafana_server_up.sh",
+      "sudo /home/ec2-user/prometheus_grafana_server_up.sh"
+    ]
   }
 }
 

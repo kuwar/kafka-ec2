@@ -64,3 +64,6 @@ kafka_cluster_id = $(bin/kafka-storage.sh random-uuid)
 
 sudo useradd --no-create-home --shell /bin/false kafka
 
+JMX Exporter
+https://repo.maven.apache.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/1.0.1/jmx_prometheus_javaagent-1.0.1.jar
+
