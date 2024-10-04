@@ -1,27 +1,6 @@
-# Create Private key
-# Store it to local file in same module
-# Create a key pair
-resource "tls_private_key" "kafka_cluster_private_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-resource "local_file" "kafka_cluster_private_key_save" {
-  filename = "${path.module}/kafka-cluster-key.pem"
-  content  = tls_private_key.kafka_cluster_private_key.private_key_pem
-
-  # Set file permissions
-  file_permission = "0600"
-}
-resource "aws_key_pair" "kafka_cluster_key_pair" {
-  key_name   = "kafka-cluster-key"
-  public_key = tls_private_key.kafka_cluster_private_key.public_key_openssh
-}
-
 resource "aws_cloudwatch_log_group" "kafka_cluster_log_group" {
   name = "kafka-cluster-logs"
 }
-
-
 
 resource "aws_instance" "kafka_cluster_instances" {
   # Creates 3 identical aws ec2 instances
@@ -44,21 +23,10 @@ resource "aws_instance" "kafka_cluster_instances" {
     Developer = "Shaurave"
     Purpose   = "Testing kafka cluster in AWS EC2"
   }
-  provisioner "file" {
-    source      = "kafka.service"
-    destination = "/home/ec2-user/kafka.service"
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"                                                # Amazon Linux 2 uses 'ec2-user'
-      private_key = tls_private_key.kafka_cluster_private_key.private_key_pem # Path to your private key
-      host        = self.public_ip                                            # EC2 instance's public IP
-    }
-  }
 
   # User data (optional) for EC2 instance initialization
   # install additional software and packages
-  user_data = file("${path.module}/user_data.sh")
+  user_data = file("${path.module}/scripts/kafka_user_data.sh")
 
 }
 
@@ -87,12 +55,13 @@ data "template_file" "kafka_cluster_server_properties_config" {
 }
 
 resource "null_resource" "kafka_cluster_server_properties_set" {
-  count = length(aws_instance.kafka_cluster_instances)
+  depends_on = [aws_instance.kafka_cluster_instances]
+  count      = length(aws_instance.kafka_cluster_instances)
   connection {
     type        = "ssh"
-    user        = "ec2-user"                                                  # Amazon Linux 2 uses 'ec2-user'
-    private_key = tls_private_key.kafka_cluster_private_key.private_key_pem   # Path to your private key
-    host        = aws_instance.kafka_cluster_instances[count.index].public_ip # EC2 instance's public IP
+    user        = "ec2-user"                                                # Amazon Linux 2 uses 'ec2-user'
+    private_key = tls_private_key.kafka_cluster_private_key.private_key_pem # Path to your private key
+    host        = aws_eip.kafka_cluster_eip[count.index].public_ip          # EC2 instance's public IP
   }
 
   provisioner "file" {
@@ -101,7 +70,23 @@ resource "null_resource" "kafka_cluster_server_properties_set" {
   }
 
   provisioner "file" {
-    source      = "monitoring/kafka_jmx_exporter.yml"
-    destination = "/home/ec2-user/kafka_jmx_exporter.yml"
+    source      = "kafka-config/kafka.service"
+    destination = "/home/ec2-user/kafka.service"
+  }
+
+  provisioner "file" {
+    source      = "monitoring/kafka_jmx_config.yml"
+    destination = "/home/ec2-user/kafka_jmx_config.yml"
+  }
+
+  provisioner "file" {
+    source      = "scripts/kafka_server_up.sh"
+    destination = "/home/ec2-user/kafka_server_up.sh"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /home/ec2-user/kafka_server_up.sh",
+      "sudo /home/ec2-user/kafka_server_up.sh"
+    ]
   }
 }

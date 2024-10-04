@@ -1,6 +1,6 @@
 # Create a security group for SSH access
 locals {
-  allowed_ports = [22, 80, 3000, 8080, 443, 7071, 9090, 9092, 9093, 9097]
+  allowed_ports = [22, 80, 8080, 443, 7071, 9092, 9093, 9097]
 }
 
 resource "aws_security_group" "kafka_cluster_sg" {

@@ -1,0 +1,14 @@
+[Unit]
+Description=Kafka service
+
+[Service]
+Type=simple
+User=kafka
+Group=kafka
+ExecStartPre=/usr/local/kafka/bin/kafka-storage.sh format -t ussfzE8yTr-lVwg5nC3fCA -c /usr/local/kafka/config/kraft/server.properties --ignore-formatted
+ExecStart=/usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/kraft/server.properties
+ExecStop=/usr/local/kafka/bin/kafka-server-stop.sh
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target
