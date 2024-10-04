@@ -75,7 +75,7 @@ resource "null_resource" "kafka_cluster_server_properties_set" {
   }
 
   provisioner "file" {
-    source      = "monitoring/kafka_jmx_config.yml"
+    source      = "kafka-config/kafka_jmx_config.yml"
     destination = "/home/ec2-user/kafka_jmx_config.yml"
   }
 
