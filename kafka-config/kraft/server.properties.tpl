@@ -132,4 +132,4 @@ log.segment.bytes=1073741824
 log.retention.check.interval.ms=300000
 
 # JMX exporter setup
-KAFKA_OPTS="$KAFKA_OPTS -javaagent:/usr/local/kafka/prometheus/jmx_prometheus_javaagent-1.0.1.jar=7071:/usr/local/kafka/prometheus/kafka_jmx_config.yml"
+export KAFKA_OPTS="$KAFKA_OPTS -javaagent:/usr/local/kafka/prometheus/jmx_prometheus_javaagent-1.0.1.jar=7071:/usr/local/kafka/prometheus/kafka_jmx_config.yml"

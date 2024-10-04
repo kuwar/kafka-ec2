@@ -54,7 +54,7 @@ data "template_file" "kafka_cluster_server_properties_config" {
   }
 }
 
-resource "null_resource" "kafka_cluster_server_properties_set" {
+resource "null_resource" "kafka_cluster_server_properties_upload" {
   depends_on = [aws_instance.kafka_cluster_instances]
   count      = length(aws_instance.kafka_cluster_instances)
   connection {
@@ -83,10 +83,15 @@ resource "null_resource" "kafka_cluster_server_properties_set" {
     source      = "scripts/kafka_server_up.sh"
     destination = "/home/ec2-user/kafka_server_up.sh"
   }
+}
+
+resource "null_resource" "kafka_cluster_server_properties_exec" {
+  depends_on = [aws_instance.kafka_cluster_instances, null_resource.kafka_cluster_server_properties_upload]
+  count      = length(aws_instance.kafka_cluster_instances)
   provisioner "remote-exec" {
     inline = [
       "sudo chmod +x /home/ec2-user/kafka_server_up.sh",
-      "sudo /home/ec2-user/kafka_server_up.sh"
+      "sudo /home/ec2-user/kafka_server_up.sh > /home/ec2-user/kafka_server_up.log 2>&1"
     ]
     connection {
       type        = "ssh"
