@@ -85,7 +85,7 @@ resource "null_resource" "kafka_cluster_server_properties_set" {
   }
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/ec2-user/kafka_server_up.sh",
+      "sudo chmod +x /home/ec2-user/kafka_server_up.sh",
       "sudo /home/ec2-user/kafka_server_up.sh"
     ]
   }

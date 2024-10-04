@@ -34,7 +34,7 @@ resource "aws_instance" "prometheus_grafana_instance" {
   instance_type = var.instance_type
   key_name      = aws_key_pair.kafka_cluster_key_pair.key_name
 
-  vpc_security_group_ids = [aws_security_group.kafka_cluster_sg.id]
+  vpc_security_group_ids = [aws_security_group.prometheus_grafana_sg.id]
   subnet_id              = aws_subnet.kafka_cluster_public_subnet[0].id
 
   associate_public_ip_address = true

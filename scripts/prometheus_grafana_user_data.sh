@@ -27,9 +27,18 @@ sudo ln -s $PROMETHEUS_HOME/promtool /usr/local/bin/promtool
 sudo chown -R prometheus:prometheus $PROMETHEUS_HOME
 
 # Install Grafana
-wget https://dl.grafana.com/oss/release/grafana_11.2.2_amd64.deb
-sudo dpkg -i grafana_11.2.2_amd64.deb
+sudo tee /etc/yum.repos.d/grafana.repo<<EOF
+[grafana]
+name=grafana
+baseurl=https://packages.grafana.com/oss/rpm
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.grafana.com/gpg.key
+EOF
 
+sudo yum install grafana -y
 # Start and enable Grafana
+sudo systemctl daemon-reload
 sudo systemctl start grafana-server
 sudo systemctl enable grafana-server
