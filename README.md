@@ -67,3 +67,4 @@ sudo useradd --no-create-home --shell /bin/false kafka
 JMX Exporter
 https://repo.maven.apache.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/1.0.1/jmx_prometheus_javaagent-1.0.1.jar
 
+export KAFKA_OPTS="$KAFKA_OPTS -javaagent:/usr/local/kafka/prometheus/jmx_prometheus_javaagent-1.0.1.jar=7071:/usr/local/kafka/prometheus/kafka_jmx_config.yml"

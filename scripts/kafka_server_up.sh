@@ -13,6 +13,13 @@ sudo mv /home/ec2-user/kafka.service /etc/systemd/system/kafka.service || { echo
 # JMX Exporter configuration
 sudo mv /home/ec2-user/kafka_jmx_config.yml $JMX_JAR_FOLDER || { echo "Kafka JMX config move failed"; exit 1; }
 
+# JMX exporter setup
+export KAFKA_OPTS="$KAFKA_OPTS -javaagent:${KAFKA_INSTALL_DIR}/prometheus/jmx_prometheus_javaagent-1.0.1.jar=7071:${KAFKA_INSTALL_DIR}/prometheus/kafka_jmx_config.yml"
+
+# making the kafka dir read, write and executable for all the users
+# sudo chmod -R 777 $KAFKA_INSTALL_DIR
+sudo chown -R kafka:kafka $KAFKA_INSTALL_DIR
+
 # making kafka daemon
 sudo systemctl daemon-reload
 sudo systemctl start kafka

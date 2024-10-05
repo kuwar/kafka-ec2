@@ -36,8 +36,3 @@ JMX_DOWNLOAD_URL="https://repo.maven.apache.org/maven2/io/prometheus/jmx/jmx_pro
 sudo mkdir $JMX_JAR_FOLDER
 wget $JMX_DOWNLOAD_URL
 sudo mv jmx_prometheus_javaagent-1.0.1.jar $JMX_JAR_FOLDER
-
-# making the kafka dir read, write and executable for all the users
-# sudo chmod -R 777 $KAFKA_INSTALL_DIR
-sudo chown -R kafka:kafka $KAFKA_INSTALL_DIR
-

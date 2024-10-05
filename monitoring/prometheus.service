@@ -5,6 +5,7 @@ After=network-online.target
 
 [Service]
 User=prometheus
+Group=prometheus
 ExecStart=/etc/prometheus/prometheus --config.file /etc/prometheus/prometheus.yml --storage.tsdb.path /var/lib/prometheus/
 Restart=always
 

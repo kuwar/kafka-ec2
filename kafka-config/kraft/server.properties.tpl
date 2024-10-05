@@ -130,6 +130,3 @@ log.segment.bytes=1073741824
 # The interval at which log segments are checked to see if they can be deleted according
 # to the retention policies
 log.retention.check.interval.ms=300000
-
-# JMX exporter setup
-export KAFKA_OPTS="$KAFKA_OPTS -javaagent:/usr/local/kafka/prometheus/jmx_prometheus_javaagent-1.0.1.jar=7071:/usr/local/kafka/prometheus/kafka_jmx_config.yml"
