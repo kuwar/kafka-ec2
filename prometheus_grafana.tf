@@ -52,7 +52,7 @@ data "template_file" "prometheus_yml_config" {
   template = file("${path.module}/monitoring/prometheus.yml.tpl")
 
   vars = {
-    brokers_list = jsonencode([for idx in range(length(aws_eip.kafka_cluster_eip)) : "${aws_eip.kafka_cluster_eip[idx].public_ip}:7071"])
+    brokers_list = jsonencode([for idx in range(length(aws_eip.kafka_cluster_eip)) : "${aws_eip.kafka_cluster_eip[idx].public_ip}:8080"])
   }
 }
 
