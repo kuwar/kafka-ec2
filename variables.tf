@@ -40,6 +40,11 @@ variable "kafka_install_path" {
   default = "/usr/local/kafka"
 }
 
+variable "jmx_prometheus_javaagent_jar_path" {
+  type    = string
+  default = "/usr/local/kafka/prometheus"
+}
+
 variable "kafka_log_path" {
   type    = string
   default = "/usr/local/kafka/data/broker/logs"
@@ -53,4 +58,25 @@ variable "offsets_topic_replication_factor" {
 variable "transaction_state_log_replication_factor" {
   type    = number
   default = 2
+}
+
+variable "kafka_cluster_ports" {
+  type = map(any)
+
+  default = {
+    broker     = 9092
+    controller = 9093
+  }
+}
+
+variable "monitoring_ports" {
+  type = map(any)
+
+  default = {
+    prometheus               = 9090
+    grafana                  = 3000
+    jmxremote                = 7071
+    jmxremote_rmi            = 7072
+    jmx_prometheus_javaagent = 8080
+  }
 }
