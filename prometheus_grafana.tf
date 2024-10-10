@@ -82,6 +82,12 @@ resource "null_resource" "prometheus_server_properties_set" {
     source      = "scripts/prometheus_grafana_server_up.sh"
     destination = "/home/ec2-user/prometheus_grafana_server_up.sh"
   }
+
+  # Adding delay of 30 seconds
+  provisioner "local-exec" {
+    command = "sleep 30"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "chmod +x /home/ec2-user/prometheus_grafana_server_up.sh",

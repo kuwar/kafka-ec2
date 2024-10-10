@@ -83,21 +83,17 @@ resource "null_resource" "kafka_cluster_server_properties_upload" {
     source      = "scripts/kafka_server_up.sh"
     destination = "/home/ec2-user/kafka_server_up.sh"
   }
-}
 
-resource "null_resource" "kafka_cluster_server_properties_exec" {
-  depends_on = [aws_instance.kafka_cluster_instances, null_resource.kafka_cluster_server_properties_upload]
-  count      = length(aws_instance.kafka_cluster_instances)
+  # Adding delay of 30 seconds
+  provisioner "local-exec" {
+    command = "sleep 30"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo chmod +x /home/ec2-user/kafka_server_up.sh",
       "sudo /home/ec2-user/kafka_server_up.sh > /home/ec2-user/kafka_server_up.log 2>&1"
     ]
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"                                                # Amazon Linux 2 uses 'ec2-user'
-      private_key = tls_private_key.kafka_cluster_private_key.private_key_pem # Path to your private key
-      host        = aws_eip.kafka_cluster_eip[count.index].public_ip          # EC2 instance's public IP
-    }
   }
 }
+
