@@ -29,4 +29,5 @@ monitoring_ports = {
   jmx_prometheus_javaagent = 8080
 }
 
+confluent_schema_registry_port = 8081
 

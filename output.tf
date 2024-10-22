@@ -24,3 +24,7 @@ output "prometheus_url" {
 output "grafana_url" {
   value = "${aws_instance.prometheus_grafana_instance.public_ip}:3000"
 }
+
+output "confluent_schema_registry_url" {
+  value = "${aws_instance.confluent_schema_registry_instance.public_ip}:${var.confluent_schema_registry_port}"
+}

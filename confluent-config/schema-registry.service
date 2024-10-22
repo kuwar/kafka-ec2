@@ -1,0 +1,13 @@
+[Unit]
+Description=Confluent Schema Registry
+
+[Service]
+Type=simple
+User=confluent
+Group=confluent
+ExecStart=/usr/local/confluent/bin/schema-registry-start /usr/local/confluent/etc/schema-registry/schema-registry.properties
+ExecStop=/usr/local/confluent/bin/schema-registry-stop
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target

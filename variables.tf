@@ -80,3 +80,8 @@ variable "monitoring_ports" {
     jmx_prometheus_javaagent = 8080
   }
 }
+
+variable "confluent_schema_registry_port" {
+  type    = number
+  default = 8081
+}

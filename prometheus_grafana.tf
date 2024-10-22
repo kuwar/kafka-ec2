@@ -90,7 +90,7 @@ resource "null_resource" "prometheus_server_properties_set" {
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/ec2-user/prometheus_grafana_server_up.sh",
+      "sudo chmod +x /home/ec2-user/prometheus_grafana_server_up.sh",
       "sudo /home/ec2-user/prometheus_grafana_server_up.sh > /home/ec2-user/prometheus_grafana_server_up.log 2>&1"
     ]
   }
